@@ -12,7 +12,7 @@ def create_asgi():
     config = get_config()
 
     app = FastAPI(
-        title="FastAPI-Messenger",
+        title="FastAPI-News",
         version="0.1.0",
         debug=config.server.debug,
         lifespan=app_lifespan,

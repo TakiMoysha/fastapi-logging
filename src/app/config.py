@@ -6,7 +6,7 @@ from app.lib.utils.upcast_env import get_upcast_env
 
 @dataclass
 class ServerConfig:
-    title: str = "logbox"
+    title: str = "event-box"
     debug: bool = field(default_factory=lambda: get_upcast_env("SERVER_DEBUG", False))
     secret_key: str = field(default_factory=lambda: get_upcast_env("SERVER_SECRET_KEY", "_dont_expose_me_"), repr=False, hash=False)  # fmt: skip
     ws_heartbeat_timeout: int = field(default_factory=lambda: get_upcast_env("SERVER_WS_HEARTBEAT_TIMEOUT", 10))  # fmt: skip
@@ -19,6 +19,19 @@ class MongoConfig:
     )
     db_server: str = field(default_factory=lambda: get_upcast_env("DB_SERVER", "server"))
     collection_server: str = field(default_factory=lambda: get_upcast_env("DB_COLLECTION", "server"))
+
+
+@dataclass
+class KafkaConfig:
+    bootstrap_servers: str = field(default_factory=lambda: get_upcast_env("KAFKA_BOOTSTRAP_SERVERS", "127.0.0.1:9092"))
+
+    new_news_received_topic: str = "news.new"
+
+    new_channel_event_topic: str = "channels.new"
+    channel_deleted_topic: str = "channels.deleted"
+
+    new_listener_added_topic: str = "channel.listeners-added"
+    new_listener_removed_topic: str = "channel.listeners-removed"
 
 
 @dataclass
@@ -42,7 +55,7 @@ class AppConfig:
     mongo: MongoConfig = field(default_factory=MongoConfig)
     logging: LoggingConfig = field(default_factory=LoggingConfig)
 
+
 @lru_cache(0)
 def get_config():
     return AppConfig()
-
