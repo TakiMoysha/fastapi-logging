@@ -1,0 +1,48 @@
+from dataclasses import dataclass, field
+from functools import lru_cache
+
+from app.lib.utils.upcast_env import get_upcast_env
+
+
+@dataclass
+class ServerConfig:
+    title: str = "logbox"
+    debug: bool = field(default_factory=lambda: get_upcast_env("SERVER_DEBUG", False))
+    secret_key: str = field(default_factory=lambda: get_upcast_env("SERVER_SECRET_KEY", "_dont_expose_me_"), repr=False, hash=False)  # fmt: skip
+    ws_heartbeat_timeout: int = field(default_factory=lambda: get_upcast_env("SERVER_WS_HEARTBEAT_TIMEOUT", 10))  # fmt: skip
+
+
+@dataclass
+class MongoConfig:
+    connection_url: str = field(
+        default_factory=lambda: get_upcast_env("DB_CONNECTION_URL", "mongodb://localhost:27017/")
+    )
+    db_server: str = field(default_factory=lambda: get_upcast_env("DB_SERVER", "server"))
+    collection_server: str = field(default_factory=lambda: get_upcast_env("DB_COLLECTION", "server"))
+
+
+@dataclass
+class LoggingConfig:
+    app_level: str = field(default_factory=lambda: get_upcast_env("LOGGING_APP_LEVEL", "INFO"))
+
+    uvicorn_access_level: str = field(default_factory=lambda: get_upcast_env("LOGGING_UVICORN_ACCESS_LEVEL", "INFO"))
+    uvicorn_error_level: str = field(default_factory=lambda: get_upcast_env("LOGGING_UVICORN_ERROR_LEVEL", "ERROR"))
+
+    saq_level: str = field(default_factory=lambda: get_upcast_env("LOGGING_SAQ_LEVEL", "INFO"))
+
+    sqlalchemy_level: str = field(default_factory=lambda: get_upcast_env("LOGGING_SQLALCHEMY_LEVEL", "WARN"))
+    motor_level: str = field(default_factory=lambda: get_upcast_env("LOGGING_MOTOR_LEVEL", "WARN"))
+
+    not_interesting: str = field(default_factory=lambda: get_upcast_env("LOGGING_NOT_INTERESTING_LEVEL", "INFO"))
+
+
+@dataclass
+class AppConfig:
+    server: ServerConfig = field(default_factory=ServerConfig)
+    mongo: MongoConfig = field(default_factory=MongoConfig)
+    logging: LoggingConfig = field(default_factory=LoggingConfig)
+
+@lru_cache(0)
+def get_config():
+    return AppConfig()
+

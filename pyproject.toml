@@ -1,0 +1,41 @@
+[project]
+name = "logbox"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "TakiMoysha", email = "36836047+TakiMoysha@users.noreply.github.com" },
+]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.115.12",
+    "motor>=3.7.1",
+]
+
+[project.scripts]
+fastapi-logging = "app:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+include = []
+dev-mode-dirs = ["src/"]
+packages = ["src/app"]
+
+[tool.uv]
+default-groups = ["dev", "test"]
+
+[dependency-groups]
+dev = ["aiosqlite>=0.21.0"]
+test = [
+    "faker>=37.3.0",
+    "hypothesis>=6.131.21",
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.26.0",
+    "pytest-databases[postgres]>=0.12.3",
+]
+
+[tool.ruff]
+line-length = 120
