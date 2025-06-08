@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from functools import lru_cache
+import os
 
 from app.lib.utils.upcast_env import get_upcast_env
 
@@ -46,7 +47,13 @@ class LoggingConfig:
     sqlalchemy_level: str = field(default_factory=lambda: get_upcast_env("LOGGING_SQLALCHEMY_LEVEL", "WARN"))
     motor_level: str = field(default_factory=lambda: get_upcast_env("LOGGING_MOTOR_LEVEL", "WARN"))
 
-    not_interesting: str = field(default_factory=lambda: get_upcast_env("LOGGING_NOT_INTERESTING_LEVEL", "INFO"))
+    not_interesting: str = field(default_factory=lambda: get_upcast_env("LOGGING_NOT_INTERESTING_LEVEL", "WARN"))
+
+
+@dataclass
+class TelegramConfig:
+    bot_token: str | None = field(default_factory=lambda: os.getenv("TELEGRAM_BOT_TOKEN", None), repr=False, hash=False)
+    chat_id: str | None = field(default_factory=lambda: os.getenv("TELEGRAM_BOT_CHAT", None), repr=False, hash=False)
 
 
 @dataclass
@@ -54,6 +61,7 @@ class AppConfig:
     server: ServerConfig = field(default_factory=ServerConfig)
     mongo: MongoConfig = field(default_factory=MongoConfig)
     logging: LoggingConfig = field(default_factory=LoggingConfig)
+    telegram: TelegramConfig = field(default_factory=TelegramConfig)
 
 
 @lru_cache(0)

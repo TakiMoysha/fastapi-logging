@@ -16,8 +16,8 @@ dev *ARGS:
 fastapi *ARGS:
   uv run fastapi {{ ARGS }}
 
-# ex: just test tests/integration -v -s --show-capture=all --log-cli-level=INFO
-test target="src/tests" *ARGS:
+# ex: just test tests/integration -v -s --show-capture=all [--log-cli-level=INFO | -p no:logging]
+test target="src/app/tests" *ARGS:
   SERVER_DEBUG=true \
   SERVER_TESTING=true  \
   LOGGING_APP_LEVEL=DEBUG \
