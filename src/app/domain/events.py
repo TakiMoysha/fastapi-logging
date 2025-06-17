@@ -15,41 +15,41 @@ class BaseEvent(ABC):
 
 # ================================================
 @dataclass
-class FeedCreateEvent(BaseEvent):
+class FeedCreatedEvent(BaseEvent):
     event_name: ClassVar[str] = "feed_created"
 
-    channel_id: str
-    channel_name: str
+    feed_id: str
+    feed_title: str
 
 
 @dataclass
-class FeedDeleteEvent(BaseEvent):
+class FeedDeletedEvent(BaseEvent):
     event_name: ClassVar[str] = "feed_deleted"
 
-    channel_id: str
+    feed_id: str
 
 
 # ------------------------------------------------
 @dataclass
-class NewsPublishEvent(BaseEvent):
+class NewsPublishedEvent(BaseEvent):
     event_name: ClassVar[str] = "news_published"
 
     news_id: str
-    channel_id: str
+    feed_id: str
     content: str
 
 
 # ------------------------------------------------
 @dataclass
-class ListenerSubscribeEvent(BaseEvent):
+class ListenerSubscribedEvent(BaseEvent):
     event_name: ClassVar[str] = "listener_subscribed"
 
+    feed_id: str
     listener_id: str
-    channel_id: str
 
 
 @dataclass
-class ListenerUnsubscribeEvent(BaseEvent):
+class ListenerUnsubscribedEvent(BaseEvent):
     event_name: ClassVar[str] = "listener_unsubscribed"
 
     listener_id: str
