@@ -7,6 +7,7 @@ from app.lib.utils.logging import get_logger_config
 config = get_config()
 logger = getLogger(__name__)
 
+# ================================================================================
 
 LOGGING_CONFIG = {
     "version": 1,
@@ -39,6 +40,7 @@ LOGGING_CONFIG = {
 }
 
 
+# ================================================================================
 def setup_logging(app: FastAPI):
     import logging.config
 
@@ -46,8 +48,14 @@ def setup_logging(app: FastAPI):
     logging.config.dictConfig(LOGGING_CONFIG)
 
 
+# ================================================================================
 @asynccontextmanager
 async def app_lifespan(app: FastAPI):
     logger.info(f"Lifespan:Server: <{str(config.server)}>")
     logger.info("Lifespan:Done: <>")
     yield
+
+
+# ================================================================================
+
+

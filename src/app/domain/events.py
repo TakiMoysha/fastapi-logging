@@ -31,10 +31,10 @@ class FeedDeletedEvent(BaseEvent):
 
 # ------------------------------------------------
 @dataclass
-class NewsPublishedEvent(BaseEvent):
-    event_name: ClassVar[str] = "news_published"
+class PostPublishedEvent(BaseEvent):
+    event_name: ClassVar[str] = "post_published"
 
-    news_id: str
+    post_id: str
     feed_id: str
     content: str
 

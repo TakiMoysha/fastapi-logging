@@ -7,13 +7,12 @@ from dataclasses import (
     field,
 )
 from datetime import datetime
-from typing import Self
 from uuid import uuid4
 
 from app.domain.eceptions import BaseDomainException
 from app.domain.values import Text, Title
 
-from .events import BaseEvent, FeedCreatedEvent, FeedDeletedEvent, ListenerSubscribedEvent
+from .events import BaseEvent, FeedCreatedEvent, FeedDeletedEvent, ListenerSubscribedEvent, PostPublishedEvent
 
 
 # ================================================================================
@@ -70,33 +69,24 @@ class BaseEntity(ABC, EventsFunctionalityMixin):
 class Feed(BaseEntity, AuditEntityMixin):
     title: Title
 
-    news: set["News"] = field(default_factory=set, kw_only=True)
+    posts: list["Post"] = field(default_factory=list, kw_only=True)
     subscribers: set["FeedListener"] = field(default_factory=set, kw_only=True)
 
     is_closed: bool = field(default=False, kw_only=True)
 
-    @classmethod
-    def create(cls, title: Title | str) -> Self:
-        _feed = cls(title=Title.from_value(title))
-        _feed.register_event(
-            FeedCreatedEvent(
-                feed_id=_feed.id,
-                feed_title=_feed.title.as_generic_type(),
-            ),
-        )
-
-        return _feed
-
     def close(self):
+        if self.is_closed:
+            raise BaseDomainException("Feed is already closed")
+
         self.is_closed = True
         self.register_event(FeedDeletedEvent(feed_id=self.id))
 
-    def push_news(self, news: "News"):
+    def publish_post(self, post: "Post"):
         if self.is_closed:
             raise BaseDomainException("Feed is closed")
 
-        self.news.add(news)
-        self.register_event(ListenerSubscribedEvent(feed_id=self.id, listener_id=news.id))
+        self.posts.append(post)
+        self.register_event(PostPublishedEvent(post_id=post.id, feed_id=self.id, content=post.text.as_generic_type()))
 
     def subscribe(self, listener: "FeedListener"):
         if self.is_closed:
@@ -117,10 +107,30 @@ class Feed(BaseEntity, AuditEntityMixin):
 
 
 @dataclass(eq=False)
-class News(BaseEntity):
+class Post(BaseEntity):
     title: Title
     text: Text
 
 
 @dataclass(eq=False)
-class FeedListener(BaseEntity): ...
+class FeedListener(BaseEntity):
+    name: str
+
+
+# ================================================================================
+
+
+class EntityBuilder:
+    @staticmethod
+    def create_feed(title: Title | str) -> Feed:
+        return Feed(title=Title.from_value(title))
+
+    @staticmethod
+    def create_post(title: Title | str, text: Text | str) -> Post:
+        title = Title.from_value(title)
+        text = Text.from_value(text)
+        return Post(title=title, text=text)
+
+    @staticmethod
+    def create_feed_listener(name: str) -> FeedListener:
+        return FeedListener(name=name)
