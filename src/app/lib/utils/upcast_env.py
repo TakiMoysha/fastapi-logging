@@ -2,16 +2,16 @@
 
 import os
 from pathlib import Path
-from typing import Annotated, cast, overload, Self
+from typing import Annotated, Callable, cast, overload, Self
 
 TRUE_VALUES = ("1", "t", "true", "y", "yes")
 PATH_SEPARATOR = ":"
 BOOTSTRAP_SEPARATOR = ";"
 
-type TParse = str | bool | int | Path | Bootstrap
+type TParse = str | bool | int | Path | BootstrapAddress
 
 
-class Bootstrap:
+class BootstrapAddress:
     def __init__(self, value: list[str] | None = None) -> None:
         self.value = value if value is not None else list()
 
@@ -20,7 +20,7 @@ class Bootstrap:
         return cls(value.split(BOOTSTRAP_SEPARATOR))
 
 
-type TBootstrap = Annotated[Bootstrap, Bootstrap.from_raw]
+type TBootstrap = Annotated[BootstrapAddress, BootstrapAddress.from_raw]
 
 type T = type
 
@@ -34,7 +34,7 @@ def get_upcast_env(key: str, default: int, type_hint: None = None) -> int: ...
 @overload
 def get_upcast_env(key: str, default: Path, type_hint: None = None) -> Path: ...
 @overload
-def get_upcast_env(key: str, default: Bootstrap, type_hint: None = None) -> Bootstrap: ...
+def get_upcast_env(key: str, default: BootstrapAddress, type_hint: None = None) -> BootstrapAddress: ...
 @overload
 def get_upcast_env(key: str, default: None, type_hint: None = None) -> None: ...
 
@@ -80,9 +80,21 @@ def get_upcast_env(
         _in = Path(value)
         return cast("T", _in) if type_hint is not None else _in
 
-    if isinstance(default, Bootstrap):
-        _in = Bootstrap.from_raw(value)
+    if isinstance(default, BootstrapAddress):
+        _in = BootstrapAddress.from_raw(value)
         return cast("T", _in) if type_hint is not None else _in
 
     msg = f"Cannot parse value: [{key}<{type(default)}>]: {value}"
     raise ValueError(msg)
+
+
+# *TODO:
+# def upcast_env_functor(
+#     key: str,
+#     default: TParse | None,
+#     type_hint: type[T] | None = None,
+# ) -> Callable[[], TParse | T | None]:
+#     def functor() -> TParse | T | None:
+#         return get_upcast_env(key, default, type_hint)
+#
+#     return functor

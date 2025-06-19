@@ -7,17 +7,16 @@ from app.lib.utils.upcast_env import get_upcast_env
 
 @dataclass
 class ServerConfig:
-    title: str = "event-box"
+    title: str = "news-box"
     debug: bool = field(default_factory=lambda: get_upcast_env("SERVER_DEBUG", False))
     secret_key: str = field(default_factory=lambda: get_upcast_env("SERVER_SECRET_KEY", "_dont_expose_me_"), repr=False, hash=False)  # fmt: skip
+
     ws_heartbeat_timeout: int = field(default_factory=lambda: get_upcast_env("SERVER_WS_HEARTBEAT_TIMEOUT", 10))  # fmt: skip
 
 
 @dataclass
 class MongoConfig:
-    connection_url: str = field(
-        default_factory=lambda: get_upcast_env("DB_CONNECTION_URL", "mongodb://localhost:27017/")
-    )
+    connection_url: str = field(default_factory=lambda: get_upcast_env("DB_CONNECTION_URL", "mongodb://localhost:27017/"))  # fmt: skip
     db_server: str = field(default_factory=lambda: get_upcast_env("DB_SERVER", "server"))
     collection_server: str = field(default_factory=lambda: get_upcast_env("DB_COLLECTION", "server"))
 
@@ -26,12 +25,15 @@ class MongoConfig:
 class KafkaConfig:
     bootstrap_servers: str = field(default_factory=lambda: get_upcast_env("KAFKA_BOOTSTRAP_SERVERS", "127.0.0.1:9092"))
 
-    post_received_topic: str = "posts.new"
+    news_activity_topic: str = "news.activity.v1"
+    news_listeners_topic: str = "news.listeners.v1"
+    news_feed_topic: str = "news.feed.v1"
 
-    feed_deleted_topic: str = "feed.deleted"
-    feed_post_published_topic: str = "feed.new"
-    new_listener_added_topic: str = "feed.listeners-added"
-    new_listener_removed_topic: str = "feed.listeners-removed"
+
+@dataclass
+class TelegramConfig:
+    bot_token: str | None = field(default_factory=lambda: os.getenv("TELEGRAM_BOT_TOKEN", None), repr=False, hash=False)
+    chat_id: str | None = field(default_factory=lambda: os.getenv("TELEGRAM_BOT_CHAT", None), repr=False, hash=False)
 
 
 @dataclass
@@ -47,12 +49,6 @@ class LoggingConfig:
     motor_level: str = field(default_factory=lambda: get_upcast_env("LOGGING_MOTOR_LEVEL", "WARN"))
 
     not_interesting: str = field(default_factory=lambda: get_upcast_env("LOGGING_NOT_INTERESTING_LEVEL", "WARN"))
-
-
-@dataclass
-class TelegramConfig:
-    bot_token: str | None = field(default_factory=lambda: os.getenv("TELEGRAM_BOT_TOKEN", None), repr=False, hash=False)
-    chat_id: str | None = field(default_factory=lambda: os.getenv("TELEGRAM_BOT_CHAT", None), repr=False, hash=False)
 
 
 @dataclass
