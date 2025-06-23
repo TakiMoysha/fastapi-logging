@@ -1,15 +1,23 @@
-from logging import getLogger
 from dataclasses import dataclass
-from typing import AsyncIterator, cast
+from logging import getLogger
+from typing import AsyncIterator
+from typing import cast
 
-from aiokafka import AIOKafkaConsumer, AIOKafkaProducer
+import msgspec
+from aiokafka import AIOKafkaConsumer
+from aiokafka import AIOKafkaProducer
 
 from app.domain.events import BaseEvent
-from app.lib import Converter
 from app.lib.brokers.base import IEventBroker
 
-
 logger = getLogger(__name__)
+
+
+class BrokerMessageSchema: ...
+
+
+class IBrokerSchema(msgspec.Struct):
+    """Avro, Protobuf, msgspec"""
 
 
 @dataclass
@@ -41,7 +49,7 @@ class KafkEventBroker(IEventBroker):
         async for message in self.consumer:
             logger.info(f"Received message: {message}")
             event = cast(BaseEvent, message.value)
-            yield Converter.from_msg(event)
+            yield BrokerConverter.from_msg(event)
 
     async def unsubscribe(self, topic: str):
         self.consumer.unsubscribe()

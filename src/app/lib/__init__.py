@@ -1,24 +1,24 @@
 # ruff: noqa: E402
 # =================================================================
-from dataclasses import asdict
-from typing_extensions import deprecated
+# from dataclasses import asdict
+# from typing_extensions import deprecated
 
-import msgspec
+# import msgspec
 
-from app.domain.events import BaseEvent
+# from app.domain.events import BaseEvent
 
 
-@deprecated("use `app.lib.repositories.converter:ResultConverter`")
-class Converter:
-    __slots__ = ()
-
-    @classmethod
-    def into_msg(cls, event: BaseEvent) -> bytes:
-        return msgspec.json.encode(event)
-
-    @classmethod
-    def from_msg(cls, event: BaseEvent) -> dict[str, any]:
-        return asdict(event)
+# @deprecated("use `app.lib.repositories.converter:ResultConverter`")
+# class Converter:
+#     __slots__ = ()
+#
+#     @classmethod
+#     def into_msg(cls, event: BaseEvent) -> bytes:
+#         return msgspec.json.encode(event)
+#
+#     @classmethod
+#     def from_msg(cls, event: BaseEvent) -> dict[str, any]:
+#         return asdict(event)
 
 
 # =================================================================

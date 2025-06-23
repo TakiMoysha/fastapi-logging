@@ -1,4 +1,4 @@
-from typing import Protocol, TypedDict, runtime_checkable
+from typing import Protocol, runtime_checkable
 
 
 # =================================================
@@ -13,3 +13,5 @@ class BaseNotificationClient(Protocol):
         *,
         disable_notification: bool = False,
     ) -> dict: ...
+
+
