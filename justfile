@@ -22,3 +22,28 @@ test target="src/app/tests" *ARGS:
   SERVER_TESTING=true  \
   LOGGING_APP_LEVEL=DEBUG \
   uv run pytest --disable-warnings {{ target }} {{ ARGS }}
+
+
+podman-rund-kafka:
+  podman network create --name devlab.dev
+
+  podman pod create --name kafka-pod --network devlab.dev
+
+  podman run --rm --name zookeeper --network devlab.dev \
+    -e ZOOKEEPER_CLIENT_PORT=2181 \
+    -e ZOOKEEPER_TICK_TIME=2000 \
+    -e ZOOKEEPER_INIT_LIMIT=5 \
+    -e ZOOKEEPER_SYNC_LIMIT=2 \
+    --pod kafka-pod \
+    quay.io/wurstmeister/zookeeper
+
+  podman run --rm --name kafka-ui --network devlab.dev \
+    -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 \
+    --pod kafka-pod \
+    quay.io/wurstmeister/kafka-ui
+
+  podman run --rm --name kafka --network devlab.dev \
+    -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 \
+    -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092 \
+    --pod kafka-pod \
+    quay.io/wurstmeister/kafka

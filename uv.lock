@@ -90,6 +90,15 @@ wheels = [
 ]
 
 [[package]]
+name = "avro"
+version = "1.12.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/e6/73/48668732bbc8ae1e79b237f84e761204c8dd266c5e16e7601000aba471d3/avro-1.12.0.tar.gz", hash = "sha256:cad9c53b23ceed699c7af6bddced42e2c572fd6b408c257a7d4fc4e8cf2e2d6b", size = 91025, upload_time = "2024-08-05T12:12:57.926Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a8/f9/6c55a90a834594b1c4c6184e8d1b97fa881af84be8e6f4b3ebb2e9d8da19/avro-1.12.0-py2.py3-none-any.whl", hash = "sha256:9a255c72e1837341dd4f6ff57b2b6f68c0f0cecdef62dd04962e10fd33bec05b", size = 124227, upload_time = "2024-08-05T12:12:56.329Z" },
+]
+
+[[package]]
 name = "certifi"
 version = "2025.4.26"
 source = { registry = "https://pypi.org/simple" }
@@ -197,6 +206,7 @@ source = { editable = "." }
 dependencies = [
     { name = "aiokafka" },
     { name = "asyncio" },
+    { name = "avro" },
     { name = "fastapi", extra = ["standard"] },
     { name = "motor" },
     { name = "msgspec" },
@@ -218,6 +228,7 @@ test = [
 requires-dist = [
     { name = "aiokafka", specifier = ">=0.12.0" },
     { name = "asyncio", specifier = ">=3.4.3" },
+    { name = "avro", specifier = ">=1.12.0" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.115.12" },
     { name = "motor", specifier = ">=3.7.1" },
     { name = "msgspec", specifier = ">=0.19.0" },
