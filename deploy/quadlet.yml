@@ -1,0 +1,23 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fatapi-news-quadlet
+  lables:
+    app: fatapi-news
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fatapi-news
+spec:
+  containers:
+    - name: fatapi-news
+      build: ./images/app.dockerfile
+    - name:

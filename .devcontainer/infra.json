@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
+  "name": "fastapi_news-infra",
+  "service": "fastapi_news-infra",
+  "dockerComposeFile": [
+    "../deploy/compose/kafka.yml"
+  ],
+  "workspaceFolder": "../../"
+}
