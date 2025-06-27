@@ -69,8 +69,8 @@ services:
   #     SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://broker-1:29092
   #     SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL: INFO
 
-  kafka-ui:
-    image: provectuslabs/kafka-ui
+  akhq:
+    image: tchiotludo/akhq
     restart: unless-stopped
     networks:
       - devlab_kafka

@@ -1,43 +1,59 @@
+name: fastapi_news-kafka
+
 networks:
-  - devlab-kafka.app
-  - default
+  private:
+    driver: bridge
 
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
-    network:
-      - devlab
+    ports:
+      - 2181:2181
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-    ports:
-      - 22181:2181
 
-  kafka:
+  akhq:
+    image: tchiotludo/akhq
+    ports:
+      - 8080:8080
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: broker_1:29092,broker_2:29093
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+      AKHQ_CONFIGURATION: >
+        akhq:
+          connections:
+            docker-kafka-server:
+              properties:
+                bootstrap.servers: broker_1:29092,broker_2:29093
+
+  broker_1:
     image: confluentinc/cp-kafka:latest
     depends_on:
       - zookeeper
-    networks:
-      - devlab
-    # ports:
-    #   - 29092:29092
+    ports:
+      - 29092:29092
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker_1:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     healthcheck:
       test: nc -z localhost 29092
 
-  kafka-ui:
-    image: provectuslabs/kafka-ui
-    # ports:
-    #   - 8090:8080
-    networks:
-      - devlab
+  broker_2:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
     environment:
-      - KAFKA_CLUSTERS_0_NAME=local
-      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:29092
-      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker_2:29093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    healthcheck:
+      test: nc -z localhost 29093
