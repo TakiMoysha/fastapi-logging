@@ -65,9 +65,15 @@ class BaseEntity(ABC, EventsFunctionalityMixin):
 # ================================================================================
 
 
+@dataclass
+class User(BaseEntity, AuditEntityMixin):
+    username: str
+
+
 @dataclass(eq=False)
 class Feed(BaseEntity, AuditEntityMixin):
     title: Title
+    owner: User
 
     posts: list["Post"] = field(default_factory=list, kw_only=True)
     subscribers: set["FeedListener"] = field(default_factory=set, kw_only=True)
@@ -108,13 +114,14 @@ class Feed(BaseEntity, AuditEntityMixin):
 
 @dataclass(eq=False)
 class Post(BaseEntity):
+    author: User
     title: Title
     text: Text
 
 
 @dataclass(eq=False)
 class FeedListener(BaseEntity):
-    name: str
+    user: User
 
 
 # ================================================================================
@@ -122,15 +129,15 @@ class FeedListener(BaseEntity):
 
 class EntityBuilder:
     @staticmethod
-    def create_feed(title: Title | str) -> Feed:
-        return Feed(title=Title.from_value(title))
+    def create_feed(owner: User, title: Title | str) -> Feed:
+        return Feed(owner=owner, title=Title.from_value(title))
 
     @staticmethod
-    def create_post(title: Title | str, text: Text | str) -> Post:
+    def create_post(author: User, title: Title | str, text: Text | str) -> Post:
         title = Title.from_value(title)
         text = Text.from_value(text)
-        return Post(title=title, text=text)
+        return Post(author=author, title=title, text=text)
 
     @staticmethod
-    def create_feed_listener(name: str) -> FeedListener:
-        return FeedListener(name=name)
+    def create_feed_listener(user: User) -> FeedListener:
+        return FeedListener(user=user)

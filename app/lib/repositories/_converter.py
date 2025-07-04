@@ -10,15 +10,18 @@ import msgspec
 from app.domain.events import BaseEvent
 from app.lib import OffsetPagination
 
+
 @runtime_checkable
 class IModel(Protocol):
     if TYPE_CHECKING:
         __collection_name__: str
         __model_name__: str
 
-    def to_dict(self, exclude: set[str] | None = None)-> dict[str, any]: ...
-        
+    def to_dict(self, exclude: set[str] | None = None) -> dict[str, any]: ...
+
+
 class ResultConverter:
+    ...
     # @overload
     # def to_model(self, data: "IModel", operation: str | None = None) -> any:
     #     """parse and convert input into a model."""
@@ -68,7 +71,7 @@ class ResultConverter:
     #     if schema_type is None:
     #         if not isinstance(data, Sequence):
     #             return cast(type(data), data) # type: ignore[unreachable,unused-ignore]
-    #         
+    #
     #         # limit_offset = find_filter(LimitOffset, filster=filters)
     #         # totla = total or len(data)
     #         # limit_offset = limit_offset if limit_offset is not None else LimitOffset(limit=len(data), offset=0)
@@ -85,4 +88,3 @@ class ResultConverter:
     #
     #     msg = "`schema_type` should be a valid Msgspec or Pydantic schema."
     #     raise BaseAppError(msg)
-
