@@ -2,7 +2,9 @@
 
 import os
 from pathlib import Path
-from typing import Annotated, Callable, cast, overload, Self
+from typing import Annotated, Callable, Final, cast, overload, Self
+
+__VERSION__ = Final[0.1]
 
 TRUE_VALUES = ("1", "t", "true", "y", "yes")
 PATH_SEPARATOR = ":"

@@ -1,9 +1,9 @@
 
 set dotenv-load
 
-app_file := "src/app/__main__.py"
+app_file := "app/__main__.py"
 
-export APP_PATH := "src/app"
+export APP_PATH := "app"
 
 # ex: just server --port 8000 --host 0.0.0.0 
 dev *ARGS:
@@ -17,7 +17,7 @@ fastapi *ARGS:
   uv run fastapi {{ ARGS }}
 
 # ex: just test tests/integration -v -s --show-capture=all [--log-cli-level=INFO | -p no:logging]
-test target="src/app/tests" *ARGS:
+test target="tests" *ARGS:
   SERVER_DEBUG=true \
   SERVER_TESTING=true  \
   LOGGING_APP_LEVEL=DEBUG \
