@@ -6,7 +6,7 @@
 
 ### Kafka
 
-#### Schemas - Avro
+#### Schemas - Avro, Protobuf
 
 ### Infra
 
@@ -21,3 +21,4 @@ podman network create --driver macvlan --gateway 192.168.100.1 --subnet 192.168.
 #### Procfile, Overmind
 
 #### Envoy, L-proxy (L7, L4, ...)
+
